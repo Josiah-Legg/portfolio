@@ -1,2 +1,2 @@
-# Portfolio
-My Portfolio Website
+# My Portfolio
+A modern, lightweight portfolio website.
