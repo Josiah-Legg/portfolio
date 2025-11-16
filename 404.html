@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>404 — Not Found</title>
+    <style>
+        :root {
+            --bg: #0b0f17;
+            --accent: #7afcff;
+            --muted: #9aa6b2;
+            --panel: rgba(255, 255, 255, 0.04);
+            --red-accent: #ec7471;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: var(--bg);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace;
+            color: var(--muted);
+        }
+
+        .wrap {
+            height: 100%;
+            display: grid;
+            place-items: center;
+            gap: 24px;
+            padding: 28px;
+            box-sizing: border-box;
+        }
+
+        #screen {
+            width: min(672px, calc(100vw - 56px));
+            aspect-ratio: 672 / 378;
+            max-width: 672px;
+            max-height: 378px;
+            background: linear-gradient(180deg, #071019 0%, #061018 100%);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            image-rendering: pixelated;
+            display: block;
+        }
+
+        .ui {
+            text-align: center;
+            pointer-events: none;
+            margin-top: -28px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 18px;
+            letter-spacing: 1px;
+            color: var(--accent);
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+            pointer-events: auto;
+        }
+
+        p {
+            margin: 8px 0 0 0;
+            font-size: 13px;
+            color: var(--muted);
+            pointer-events: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 12px;
+            text-decoration: none;
+            color: var(--accent);
+            border: 2px solid rgba(122, 252, 255, 0.12);
+            background: var(--panel);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            letter-spacing: 0.6px;
+            pointer-events: auto;
+            transition: transform .12s ease, box-shadow .12s ease;
+            box-shadow: 0 6px 18px rgba(12, 20, 28, 0.6);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(12, 20, 28, 0.7);
+        }
+
+        .wrap {
+            position: relative;
+        }
+
+        .credits {
+            position: absolute;
+            bottom: 14px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 11px;
+            color: #45515a;
+            pointer-events: auto;
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <canvas id="screen"></canvas>
+        <div class="ui">
+            <h1>404 Error</h1>
+            <p>Page not found. Check the URL and try again.</p>
+            <a class="btn" href="https://josiahlegg.com" aria-label="Go home">Return Home</a>
+            <div class="credits">&copy; 2025 Josiah Legg. All rights reserved.</div>
+        </div>
+        <script>
+            const canvas = document.getElementById('screen');
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            const bw = 112;
+            const bh = 63;
+            const buf = document.createElement('canvas');
+            buf.width = bw;
+            buf.height = bh;
+            const bctx = buf.getContext('2d');
+            if (ctx && bctx) {
+                function resize() {
+                    const rect = canvas.getBoundingClientRect();
+                    canvas.width = Math.floor(rect.width);
+                    canvas.height = Math.floor(rect.height);
+                    ctx.imageSmoothingEnabled = false;
+                }
+                addEventListener('resize', resize);
+                resize();
+                window.addEventListener('unload', () => {
+                    removeEventListener('resize', resize);
+                });
+                const sprite = {
+                    x: 8, y: 8,
+                    vx: 1.0, vy: 0.7,
+                    size: 6,
+                    color: [122, 252, 255],
+                    isRedAccent: false
+                };
+                const DVD_SPEED_FACTOR = 0.5;
+                sprite.vx *= DVD_SPEED_FACTOR;
+                sprite.vy *= DVD_SPEED_FACTOR;
+                let t = 0;
+                function render() {
+                    t += 1;
+                    bctx.fillStyle = '#061018';
+                    bctx.fillRect(0, 0, bw, bh);
+                    const g = bctx.createLinearGradient(0, 0, 0, bh);
+                    g.addColorStop(0, 'rgba(255,255,255,0.01)');
+                    g.addColorStop(0.5, 'rgba(0,0,0,0.04)');
+                    g.addColorStop(1, 'rgba(255,255,255,0.01)');
+                    bctx.fillStyle = g;
+                    bctx.fillRect(0, 0, bw, bh);
+                    bctx.save();
+                    bctx.fillStyle = `rgba(122,252,255,0.95)`;
+                    bctx.font = "bold 48px monospace";
+                    bctx.textAlign = "center";
+                    bctx.textBaseline = "middle";
+                    const jitter = Math.sin(t * 0.06) * 0.6;
+                    bctx.fillText("404", bw / 2 + (Math.sin(t * 0.03) * 1.2), bh / 2 + jitter);
+                    bctx.restore();
+                    if (Math.random() < 0.16) {
+                        const lines = 1 + Math.floor(Math.random() * 3);
+                        for (let i = 0; i < lines; i++) {
+                            const y = Math.floor(Math.random() * (bh - 6));
+                            const h = 1 + Math.floor(Math.random() * 6);
+                            const dx = (-8 + Math.random() * 16) | 0;
+                            bctx.drawImage(buf, 0, y, bw, h, dx, y, bw, h);
+                        }
+                    }
+                    for (let i = 0; i < 5; i++) {
+                        const x = (Math.random() * bw) | 0;
+                        const y = (Math.random() * bh) | 0;
+                        bctx.fillStyle = `rgba(122,252,255,${0.02 + Math.random() * 0.06})`;
+                        bctx.fillRect(x, y, 2, 1);
+                    }
+                    sprite.x += sprite.vx;
+                    sprite.y += sprite.vy;
+                    let hitX = false, hitY = false;
+                    if (sprite.x <= 2) {
+                        sprite.x = 2;
+                        sprite.vx = Math.abs(sprite.vx);
+                        hitX = true;
+                    } else if (sprite.x >= bw - sprite.size - 2) {
+                        sprite.x = bw - sprite.size - 2;
+                        sprite.vx = -Math.abs(sprite.vx);
+                        hitX = true;
+                    }
+                    if (sprite.y <= 2) {
+                        sprite.y = 2;
+                        sprite.vy = Math.abs(sprite.vy);
+                        hitY = true;
+                    } else if (sprite.y >= bh - sprite.size - 2) {
+                        sprite.y = bh - sprite.size - 2;
+                        sprite.vy = -Math.abs(sprite.vy);
+                        hitY = true;
+                    }
+                    if (hitX && hitY) {
+                        sprite.color = [236, 116, 113];
+                        sprite.isRedAccent = true;
+                    } else if (sprite.isRedAccent && (hitX || hitY)) {
+                        sprite.color = [122, 252, 255];
+                        sprite.isRedAccent = false;
+                    }
+                    bctx.fillStyle = `rgb(${sprite.color.join(',')})`;
+                    bctx.fillRect(Math.round(sprite.x), Math.round(sprite.y), sprite.size, sprite.size);
+                    const vv = bctx.createLinearGradient(0, 0, bw, 0);
+                    vv.addColorStop(0, 'rgba(0,0,0,0.1)');
+                    vv.addColorStop(0.5, 'rgba(0,0,0,0)');
+                    vv.addColorStop(1, 'rgba(0,0,0,0.1)');
+                    bctx.fillStyle = vv;
+                    bctx.fillRect(0, 0, bw, bh);
+                    ctx.imageSmoothingEnabled = false;
+                    if (Math.random() < 0.04) {
+                        const y = Math.floor(Math.random() * (bh - 8));
+                        const h = 3 + Math.floor(Math.random() * 6);
+                        const r = (Math.random() * 6) | 0;
+                        ctx.save();
+                        ctx.imageSmoothingEnabled = false;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(buf, 0, 0, canvas.width, canvas.height);
+                        const sx = 0, sy = y, sw = bw, sh = h;
+                        const temp = document.createElement('canvas');
+                        temp.width = sw; temp.height = sh;
+                        const tctx = temp.getContext('2d');
+                        tctx.drawImage(buf, sx, sy, sw, sh, 0, 0, sw, sh);
+                        tctx.fillStyle = 'rgba(122,252,255,0.12)';
+                        tctx.fillRect(0, 0, sw, sh);
+                        ctx.drawImage(temp, 0, sy * (canvas.height / bh) + r, canvas.width, sh * (canvas.height / bh));
+                        ctx.restore();
+                    } else {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(buf, 0, 0, canvas.width, canvas.height);
+                    }
+                    requestAnimationFrame(render);
+                }
+                requestAnimationFrame(render);
+            } else {
+                document.querySelector('.ui').innerHTML += '<p style="color:#ff6666;">Your browser does not support HTML5 Canvas.</p>';
+            }
+        </script>
+    </div>
+</body>
+
+</html>

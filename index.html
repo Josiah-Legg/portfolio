@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Portfolio</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+    <style>
+        :root {
+            --bg: #0b0f17;
+            --accent: #7afcff;
+            --muted: #9aa6b2;
+            --panel: rgba(255, 255, 255, 0.04);
+            --border: rgba(122, 252, 255, 0.12);
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: var(--bg);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace;
+            color: var(--muted);
+        }
+
+        .wrap {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 28px;
+            box-sizing: border-box;
+            gap: 40px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        .tagline {
+            margin: 8px 0 0 0;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* Main content grid */
+        main {
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            display: grid;
+            gap: 32px;
+        }
+
+        /* Section */
+        section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        section h2 {
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 1px;
+            color: var(--accent);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        /* Project cards */
+        .projects {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .project {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 8px;
+            transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+            box-shadow: 0 6px 18px rgba(12, 20, 28, 0.6);
+        }
+
+        .project:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(12, 20, 28, 0.8);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .project h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+        }
+
+        .project p {
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 11px;
+            padding: 4px 8px;
+            background: rgba(122, 252, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--accent);
+            letter-spacing: 0.3px;
+        }
+
+        /* Skills list */
+        .skills {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .skill-group h3 {
+            margin: 0 0 6px 0;
+            font-size: 13px;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+        }
+
+        .skill-group p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+            font-size: 12px;
+            color: #45515a;
+        }
+
+        .social {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .social a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity .12s ease;
+        }
+
+        .social a:hover {
+            opacity: 0.7;
+        }
+
+        /* Contact Form */
+
+        #contactForm {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 100%;
+            margin: 0 auto;
+        }
+
+        #contactForm>div {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        #contactForm label {
+            font-size: 12px;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        #contactForm input,
+        #contactForm textarea {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 12px;
+            transition: border-color .12s ease, background .12s ease;
+        }
+
+        #contactForm input:focus,
+        #contactForm textarea:focus {
+            outline: none;
+            border-color: rgba(122, 252, 255, 0.3);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        #contactForm textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        #contactForm button {
+            background: var(--panel);
+            border: 2px solid var(--border);
+            color: var(--accent);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+            letter-spacing: 0.6px;
+            transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+            box-shadow: 0 6px 18px rgba(12, 20, 28, 0.6);
+            margin-top: 4px;
+        }
+
+        #contactForm button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(12, 20, 28, 0.8);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        #contactForm button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #formStatus {
+            margin: 8px 0 0 0;
+            font-size: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .wrap {
+                gap: 24px;
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            section h2 {
+                font-size: 14px;
+            }
+
+            .projects {
+                grid-template-columns: 1fr;
+            }
+
+            #contactForm {
+                min-width: 90vw;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <h1>MY PORTFOLIO</h1>
+            <p class="tagline">Student Computer Hardware Engineer</p>
+        </header>
+
+        <main>
+            <!-- About -->
+            <section>
+                <h2>→ About</h2>
+                <p>I focus on computer hardware-building and including workstations, gaming PCs, NAS systems, and other
+                    servers. My skills do also extend to software, I can code in Python, HTML and CSS, and can
+                    understand JavaScript for interactivity. I value reliability, performance, and clean, maintainable
+                    systems.</p>
+            </section>
+
+            <!-- Featured Projects -->
+            <section>
+                <h2>→ My Projects</h2>
+                <div class="projects">
+                    <div class="project">
+                        <h3>Quiz Study App</h3>
+                        <p>Interactive study platform with real-time quiz generation and progress tracking.</p>
+                        <div class="tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Flask</span>
+                            <span class="tag">HTML</span>
+                        </div>
+                    </div>
+
+                    <div class="project">
+                        <h3>Multi-node Virtualisation Cluster</h3>
+                        <p>Multiple computers working together to run lightweight containerized applications as one
+                            coordinated, scalable cluster.</p>
+                        <div class="tags">
+                            <span class="tag">Hardware</span>
+                            <span class="tag">3D Design</span>
+                            <span class="tag">Networking</span>
+                        </div>
+                    </div>
+
+                    <div class="project">
+                        <h3>2D RPG</h3>
+                        <p>A 2D role-playing game with pixel art graphics, captivating music, and an engaging storyline.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">PyGame</span>
+                            <span class="tag">Music Composition</span>
+                        </div>
+                    </div>
+
+                    <div class="project">
+                        <h3>Responsive Website</h3>
+                        <p>Modern, minimal portfolio website with an adaptive layout and .</p>
+                        <div class="tags">
+                            <span class="tag">HTML</span>
+                            <span class="tag">CSS</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">PHP</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills -->
+            <section>
+                <h2>→ Skills</h2>
+                <div class="skills">
+                    <div class="skill-group">
+                        <h3>Frontend</h3>
+                        <p>HTML · CSS · JavaScript</p>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Backend</h3>
+                        <p>Python · Flask · SQL</p>
+                    </div>
+                    <div class="skill-group">
+                        <h3>Tools</h3>
+                        <p>VS Code · GIMP · Visual Studio</p>
+                    </div>
+                </div>
+            </section>
+
+        <!-- Contact -->
+        <section>
+            <h2>→ Contact</h2>
+            <form id="contactForm">
+                <div>
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div>
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAACBJLourXCCmVEdd"></div>
+                <button type="submit">Send Message</button>
+                <p id="formStatus"></p>
+            </form>
+        </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="social">
+                <a href="https://github.com/Josiah-Legg">GitHub</a>
+                <a href="#">Twitter</a>
+                <a href="#">Email</a>
+            </div>
+            <p>&copy; 2025 Josiah Legg. All rights reserved.</p>
+        </footer>
+    </div>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const status = document.getElementById('formStatus');
+            const button = this.querySelector('button');
+            const formData = new FormData(this);
+
+            // Show loading state
+            button.textContent = 'Sending...';
+            button.disabled = true;
+            status.style.display = 'none';
+
+            try {
+                const response = await fetch('submit-contact.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                status.style.display = 'block';
+
+                if (result.success) {
+                    status.style.color = 'var(--accent)';
+                    status.textContent = result.message;
+                    this.reset();
+                    // Reset Turnstile widget
+                    if (typeof turnstile !== 'undefined') {
+                        turnstile.reset();
+                    }
+                } else {
+                    status.style.color = 'var(--red-accent)';
+                    status.textContent = result.message;
+                }
+
+                button.textContent = 'Send Message';
+                button.disabled = false;
+
+                // Hide status after 5 seconds
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 5000);
+
+            } catch (error) {
+                status.style.display = 'block';
+                status.style.color = 'var(--red-accent)';
+                status.textContent = 'Network error. Please try again.';
+                button.textContent = 'Send Message';
+                button.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>
