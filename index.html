@@ -15,33 +15,42 @@
     })();
   </script>
 
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
   <!-- Open Graph / social preview. TODO: set og:image to a full URL of a 1200x630
        image (e.g. https://yourdomain.com/og-image.png) and add that image file. -->
   <meta property="og:type" content="website">
+  <!-- TODO: replace josiahlegg.com with your production domain -->
+  <meta property="og:url" content="https://josiahlegg.com/">
   <meta property="og:title" content="Josiah Legg | Portfolio">
   <meta property="og:description" content="Designer and developer building digital products focused on clarity, craft, and things that feel good to use.">
-  <meta property="og:image" content="/og-image.png">
+  <meta property="og:image" content="https://josiahlegg.com/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
 
+  <link rel="canonical" href="https://josiahlegg.com/">
   <title>Josiah Legg | Portfolio Home</title>
-  <link rel="stylesheet" href="styles/styles.css">
+  <link rel="stylesheet" href="/styles/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Inter:wght@300;400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Cascadia+Mono:wght@300;400;500;600&display=swap"
     rel="stylesheet">
 </head>
 
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="header-row">
       <a href="/" class="logo" aria-label="Josiah Legg | Portfolio" aria-current="page">
-        <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <g fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-            <!-- circle place holder -->
-            <circle cx="50" cy="50" r="20" />
+        <svg class="logo-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="14.31" y1="8" x2="20.05" y2="17.94" />
+            <line x1="9.69" y1="8" x2="21.17" y2="8" />
+            <line x1="7.38" y1="12" x2="13.12" y2="2.06" />
+            <line x1="9.69" y1="16" x2="3.95" y2="6.06" />
+            <line x1="14.31" y1="16" x2="2.83" y2="16" />
+            <line x1="16.62" y1="12" x2="10.88" y2="21.94" />
           </g>
         </svg>
         <span class="logo-text">Josiah Legg</span>
@@ -69,11 +78,11 @@
     <nav class="site-nav" aria-label="Primary">
       <span class="nav-dot" aria-hidden="true"></span>
       <ul role="list">
-        <li><a href="projects/" class="nav-link">Projects</a></li>
-        <li><a href="about/" class="nav-link">About</a></li>
-        <li><a href="#" class="nav-link">Writing</a></li>
+        <li><a href="/projects/" class="nav-link">Projects</a></li>
+        <li><a href="/about/" class="nav-link">About</a></li>
+        <li><a href="/contact/" class="nav-link">Contact</a></li>
         <li>
-          <a href="#" class="nav-link external" target="_blank" rel="noopener">
+          <a href="https://www.youtube.com" class="nav-link external" target="_blank" rel="noopener">
             <span>Resume</span>
             <svg width="8" height="8" viewBox="0 0 8 8" class="external-arrow" aria-hidden="true">
               <path d="M0.772727 8L0 7.22727L6.13636 1.09091H0.727273V0H8V7.27273H6.90909V1.86364L0.772727 8Z" />
@@ -84,7 +93,7 @@
     </nav>
   </header>
 
-  <main class="main-content">
+  <main class="main-content" id="main" tabindex="-1">
     <section class="hero">
       <p class="hero-eyebrow">Designer &amp; Developer</p>
       <h1 class="hero-title">Building things<br>for the web.</h1>
@@ -92,7 +101,7 @@
     </section>
   </main>
 
-  <script src="scripts/main.js" defer></script>
+  <script src="/scripts/main.js" defer></script>
 </body>
 
 </html>

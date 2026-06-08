@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TODO: replace josiahlegg.com with your production domain -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://josiahlegg.com/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://josiahlegg.com/projects/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://josiahlegg.com/about/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://josiahlegg.com/contact/</loc>
+    <priority>0.8</priority>
+  </url>
+</urlset>

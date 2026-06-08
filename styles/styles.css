@@ -22,7 +22,7 @@
 /* ---------- Design tokens ---------- */
 :root {
   /* Typography */
-  --font-secondary: "Inter", system-ui, -apple-system, sans-serif;
+  --font-secondary: "Cascadia Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-logo: "Bricolage Grotesque", system-ui, sans-serif;
 
   /* Easing */
@@ -39,6 +39,10 @@
   /* Sidebar */
   --sidebar-width: 18rem;
   --sidebar-padding: 2.25rem;
+  /* The left rail: at least the sidebar width, but never narrower than 1/6 of
+     the viewport, so main content is always anchored to (or right of) the 1/6
+     line and never drifts on wide screens. */
+  --rail: max(var(--sidebar-width), 100vw / 6);
 }
 
 /* ---------- Reset ---------- */
@@ -46,7 +50,7 @@
 
 html, body { margin: 0; padding: 0; }
 
-html { overflow-x: hidden; scrollbar-gutter: stable; }
+html { overflow-x: hidden; }
 
 ul { list-style: none; padding: 0; margin: 0; }
 
@@ -114,16 +118,41 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: flex-start;
-  max-width: 1400px;
-  margin-inline: auto;
   width: 100%;
+}
+
+/* ---------- Skip to content ----------
+   First focusable element on the page; invisible until a keyboard user tabs to
+   it, then it lets them jump past the sidebar straight to the main content. */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100000;
+  padding: 0.6rem 1rem;
+  background-color: var(--background);
+  color: var(--text);
+  border: 1px solid var(--primary);
+  border-radius: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(-150%);
+  transition: transform 0.2s var(--ease-out-cubic), opacity 0.2s ease;
+}
+
+.skip-link:focus {
+  opacity: 1;
+  transform: translateY(0);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ============================================================
    Header / Sidebar
    ============================================================ */
 .site-header {
-  width: var(--sidebar-width);
+  width: var(--rail);
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -133,9 +162,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4.5rem;
-  padding: var(--sidebar-padding);
-  padding-top: 10rem;
-  padding-left: 0rem;
+  padding: 8rem var(--sidebar-padding) var(--sidebar-padding) 3.5rem;
   background-color: transparent;
   transition: background-color var(--theme-transition-duration) var(--ease-in-out-sine);
 }
@@ -157,10 +184,10 @@ body {
 }
 
 .logo-icon {
-  height: 1.8em;
+  height: 1.6em;
   width: auto;
   flex-shrink: 0;
-  stroke-width: 7;
+  stroke-width: 2;
 }
 
 .logo-text {
@@ -323,7 +350,6 @@ body {
   left: -0.5rem;
   top: 0;
   transition:
-    top 0.6s var(--ease-out-elastic),
     background-color var(--theme-transition-duration) var(--ease-in-out-sine),
     opacity 0.4s ease,
     filter 0.4s ease;
@@ -333,24 +359,28 @@ body {
   display: block;
 }
 
-@media (hover: hover) {
-  .site-nav:hover .nav-dot {
-    filter: blur(1.5px);
-    opacity: 0.2;
-  }
-}
-
 /* ---------- Main content ---------- */
 .main-content {
   flex: 1;
+  min-width: 0;
   padding: 3.5rem 4rem;
   min-height: 100vh;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  filter: blur(12px);
+  transition:
+    opacity 0.4s var(--ease-out-cubic),
+    filter 0.4s var(--ease-out-cubic);
 }
 
 .main-content.is-visible {
   opacity: 1;
+  filter: blur(0);
+}
+
+/* Router moves focus here after a page swap (for keyboard / screen readers);
+   it isn't an interactive control, so no focus ring. */
+.main-content:focus {
+  outline: none;
 }
 
 /* ---------- Hero ---------- */
@@ -360,14 +390,21 @@ body {
 
 .hero {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: grid;
+  /* The title is the middle (auto) row, flanked by two equal 1fr spacers, so
+     its vertical CENTER always lands at the hero's midpoint — identical on every
+     page regardless of line count or whether there's an eyebrow/body. The
+     eyebrow sits at the bottom of the top spacer, the body at the top of the
+     bottom one. */
+  grid-template-rows: 1fr auto 1fr;
+  justify-items: start;
   height: 100vh;
   padding: 3.5rem 4rem;
 }
 
 .hero-eyebrow {
+  grid-row: 1;
+  align-self: end;
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -377,20 +414,62 @@ body {
 }
 
 .hero-title {
+  grid-row: 2;
   font-family: var(--font-logo);
   font-size: clamp(2.75rem, 5.5vw, 5rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.05;
-  margin: 0 0 1.25rem;
+  margin: 0;
 }
 
 .hero-body {
+  grid-row: 3;
+  align-self: start;
   font-size: 1.05rem;
   line-height: 1.65;
   opacity: 0.6;
   max-width: 38ch;
-  margin: 0;
+  margin: 1.25rem 0 0;
+}
+
+/* Wrapper for below-title content when there's more than one element (e.g. the
+   404 page's body + link), so they share the bottom spacer row. */
+.hero-below {
+  grid-row: 3;
+  align-self: start;
+  margin-top: 1.25rem;
+}
+
+.hero-below .hero-body {
+  margin-top: 0;
+}
+
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: fit-content;
+  margin-top: 2.25rem;
+  font-weight: 500;
+  color: var(--text);
+  border-bottom: 1px solid color-mix(in srgb, var(--primary), transparent 45%);
+  padding-bottom: 0.15rem;
+  transition:
+    gap 0.3s var(--ease-out-cubic),
+    border-color 0.3s ease,
+    color var(--theme-transition-duration) var(--ease-in-out-sine);
+}
+
+.hero-link:hover {
+  gap: 0.7rem;
+  border-color: var(--primary);
+}
+
+.hero-link svg {
+  width: 0.7em;
+  height: 0.7em;
+  fill: currentColor;
 }
 
 .scroll-hint {
@@ -428,7 +507,7 @@ body {
 .section-dots {
   position: fixed;
   bottom: 2rem;
-  left: calc(50% + var(--sidebar-width) / 2);
+  left: calc(50% + var(--rail) / 2);
   transform: translateX(-50%);
   display: flex;
   align-items: center;
@@ -483,6 +562,9 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.25rem;
+  /* Cap the measure so cards don't sprawl across very wide viewports now that
+     the layout is full-bleed (no centered body). Tops out around 3 columns. */
+  max-width: 60rem;
 }
 
 .project-card {
@@ -569,6 +651,159 @@ body {
   margin-bottom: 0;
 }
 
+/* ---------- Contact page ---------- */
+.contact-content {
+  max-width: 52ch;
+}
+
+.contact-intro {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  opacity: 0.75;
+  margin: 0 0 2.5rem;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  max-width: 34rem;
+}
+
+.contact-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--primary), transparent 70%);
+  transition: opacity 0.3s ease;
+}
+
+.contact-link:last-child {
+  border-bottom: 1px solid color-mix(in srgb, var(--primary), transparent 70%);
+}
+
+.contact-link-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  flex-shrink: 0;
+}
+
+.contact-link-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-logo);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-align: right;
+}
+
+.contact-link-value .external-arrow {
+  position: static;
+  width: 0.5em;
+  height: 0.5em;
+  margin-top: 0;
+  transform: none;
+  opacity: 0;
+}
+
+.contact-link:hover .contact-link-value .external-arrow,
+.contact-link:focus-visible .contact-link-value .external-arrow {
+  opacity: 1;
+}
+
+/* ---- Email copy-to-clipboard ---- */
+.contact-copy {
+  cursor: pointer;
+}
+
+.contact-copy .contact-link-value {
+  position: relative;
+}
+
+.copy-default,
+.copy-feedback {
+  transition:
+    opacity 0.3s var(--ease-out-cubic),
+    transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.copy-default {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* The copy icon hints that the email is clickable-to-copy, revealed exactly
+   like the external-arrow that marks the new-tab links. */
+.copy-icon {
+  width: 0.5em;
+  height: 0.5em;
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.contact-copy:hover .copy-icon,
+.contact-copy:focus-visible .copy-icon {
+  opacity: 1;
+}
+
+.copy-feedback {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateY(0.35rem) scale(0.96);
+  transform-origin: right center;
+  pointer-events: none;
+}
+
+.copy-feedback svg {
+  width: 0.8em;
+  height: 0.8em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.contact-copy.copied .copy-default {
+  opacity: 0;
+  transform: translateY(-0.3rem);
+}
+
+.contact-copy.copied .copy-feedback {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copy-default,
+  .copy-feedback {
+    transition: opacity 0.2s ease;
+  }
+
+  .copy-feedback,
+  .contact-copy.copied .copy-default {
+    transform: none;
+  }
+}
+
 /* ---------- Mobile ---------- */
 @media (max-width: 767px) {
   body {
@@ -619,6 +854,12 @@ body {
     letter-spacing: 0;
   }
 
+  /* The cursor-following dot is a desktop-rail affordance; the mobile overlay
+     is a centered full-screen menu, so it has no place here. */
+  .nav-dot {
+    display: none !important;
+  }
+
   /* Arrow sits outside the link box so the text stays optically centered,
      and scales with the larger mobile type instead of staying 8px. */
   .external-arrow {
@@ -642,5 +883,18 @@ body {
     height: calc(100vh - 4.5rem);
     height: calc(100svh - 4.5rem);
     padding: 2rem 1.5rem;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the page-transition reveal, but as a plain fade with no blur. */
+  .main-content,
+  .main-content.is-visible {
+    filter: none;
+  }
+
+  .main-content {
+    transition: opacity 0.2s ease;
   }
 }

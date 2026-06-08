@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO: replace josiahlegg.com with your production domain
+Sitemap: https://josiahlegg.com/sitemap.xml
