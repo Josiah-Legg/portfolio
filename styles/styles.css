@@ -77,6 +77,14 @@ html {
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
+/* Two grain layers so the texture shows on every value range:
+   - multiply darkens, so it grains the light areas (background) but is
+     invisible on near-black text.
+   - screen lightens, so it grains the dark areas (text) but is invisible
+     on the light background.
+   Together they texture everything, and it works in both themes since the
+   light/dark regions simply swap which layer does the work. */
+html::before,
 html::after {
   content: '';
   position: fixed;
@@ -85,13 +93,14 @@ html::after {
   z-index: 99999;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 200px 200px;
-  mix-blend-mode: multiply;
-  opacity: 0.55;
 }
 
-/* Multiply darkens, so the grain disappears against a dark background.
-   Screen lightens instead, keeping the texture visible in dark mode. */
-:root[data-theme="dark"]::after {
+html::after {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+html::before {
   mix-blend-mode: screen;
   opacity: 0.4;
 }
