@@ -11,6 +11,7 @@
       var saved = localStorage.getItem('theme');
       var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', theme);
+      if (localStorage.getItem('reader') === 'true') document.documentElement.setAttribute('data-reader', '');
     })();
   </script>
 
@@ -46,6 +47,12 @@
       </a>
 
       <div class="header-controls">
+        <button class="reader-toggle" aria-label="Toggle reader mode" aria-pressed="false">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 5h6a3 3 0 0 1 3 3v12a2.5 2.5 0 0 0-2.5-2.5H2z" />
+            <path d="M22 5h-6a3 3 0 0 0-3 3v12a2.5 2.5 0 0 1 2.5-2.5H22z" />
+          </svg>
+        </button>
         <button class="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false">
           <svg class="icon-moon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
             aria-hidden="true">
@@ -74,8 +81,8 @@
         <li><a href="/about/" class="nav-link">About</a></li>
         <li><a href="/contact/" class="nav-link">Contact</a></li>
         <li>
-          <a href="https://www.youtube.com" class="nav-link external" target="_blank" rel="noopener">
-            <span>Resume</span>
+          <a href="https://blog.josiahlegg.com" class="nav-link external" target="_blank" rel="noopener">
+            <span>Blog</span>
             <svg width="8" height="8" viewBox="0 0 8 8" class="external-arrow" aria-hidden="true">
               <path d="M0.772727 8L0 7.22727L6.13636 1.09091H0.727273V0H8V7.27273H6.90909V1.86364L0.772727 8Z" />
             </svg>
@@ -144,7 +151,8 @@
             </svg>
           </div>
           <p class="project-card-desc">The AI models named 'Avery' where the products of my first few attempts at LORA
-            fine-tuning. I created 4 models in this project, you can read the full details about each one on my blog when released.
+            fine-tuning. I created 4 models in this project, you can read the full details about each one on my blog
+            when released.
           </p>
           <div class="project-card-tags">
             <span class="tag">Python</span>
@@ -152,6 +160,21 @@
             <span class="tag">AI</span>
           </div>
         </article>
+
+      </div>
+
+      <div class="scroll-hint" aria-hidden="true">
+        <span>Scroll</span>
+        <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 1V11M5 11L1 7M5 11L9 7" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <p class="section-label">More projects</p>
+      <div class="projects-grid">
 
         <article class="project-card" data-href="https://github.com/Josiah-Legg/vault">
           <div class="project-card-header">
@@ -191,7 +214,8 @@
               <path d="M0.772727 8L0 7.22727L6.13636 1.09091H0.727273V0H8V7.27273H6.90909V1.86364L0.772727 8Z" />
             </svg>
           </div>
-          <p class="project-card-desc">A simple git alternative; a personal version-control and backup system. One binary, self-hosted.</p>
+          <p class="project-card-desc">A simple git alternative; a personal version-control and backup system. One
+            binary, self-hosted.</p>
           <div class="project-card-tags">
             <span class="tag">Go</span>
           </div>

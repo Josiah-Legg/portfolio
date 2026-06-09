@@ -35,6 +35,17 @@
 
   /* Theme transition */
   --theme-transition-duration: 0.4s;
+
+  /* Content stage: a fixed-width column centered in the area right of
+     the sidebar, then nudged 10% further right. --stage-pad is the LEFT
+     padding; % resolves against .main-content, so only use it on direct
+     children of main (.hero, .page-section). */
+  --stage-w: 68rem;
+  --stage-pad: max(4rem, calc((100% - var(--stage-w)) / 2 + 10%));
+
+  /* Sidebar content (logo/nav) starts ~10% across the screen; the
+     sidebar box widens to absorb the inset. */
+  --sidebar-inset: 10vw;
 }
 
 /* ---------- Reset ---------- */
@@ -78,11 +89,18 @@ img {
 /* ---------- Base ---------- */
 html {
   font-family: var(--font-secondary);
-  font-size: 17.6px;
+  /* Fluid root scale. Design reference is 2560x1440 at 17.6px:
+     0.6875vw = 17.6px @ 2560w, 1.2223vh = 17.6px @ 1440h.
+     min() keeps ultrawides height-bound; the floor keeps text readable
+     on small desktops. Everything sized in rem scales proportionally. */
+  font-size: clamp(13px, min(0.6875vw, 1.2223vh), 26.4px);
   color: var(--text);
   background-color: var(--background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Reserve the scrollbar gutter so pages that don't scroll (home,
+     short reader-mode pages) don't shift relative to pages that do. */
+  scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--primary), transparent 35%) transparent;
 }
@@ -167,7 +185,7 @@ body {
    Header / Sidebar
    ============================================================ */
 .site-header {
-  width: 33rem;
+  width: calc(23rem + var(--sidebar-inset));
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -177,7 +195,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 5rem;
-  padding: 10rem 10rem 20rem 10rem;
+  padding: 16rem 10rem 20rem var(--sidebar-inset);
   background-color: transparent;
   transition: background-color var(--theme-transition-duration) var(--ease-in-out-sine);
 }
@@ -266,7 +284,8 @@ body {
   gap: 0.5rem;
 }
 
-.theme-toggle {
+.theme-toggle,
+.reader-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -281,13 +300,15 @@ body {
   transition: color var(--theme-transition-duration) var(--ease-in-out-sine), opacity 0.2s ease;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.reader-toggle:hover {
   opacity: 0.65;
 }
 
-.theme-toggle svg {
-  width: 16px;
-  height: 16px;
+.theme-toggle svg,
+.reader-toggle svg {
+  width: 0.9rem;
+  height: 0.9rem;
   stroke: currentColor;
   fill: none;
 }
@@ -379,6 +400,8 @@ body {
 }
 
 .external-arrow {
+  width: 0.455rem;
+  height: 0.455rem;
   margin-top: 0.125rem;
   fill: var(--text);
   opacity: 0;
@@ -441,7 +464,7 @@ body {
   grid-template-rows: 0.6fr auto 1.0fr;
   justify-items: start;
   height: 100vh;
-  padding: 3.5rem 4rem;
+  padding: 3.5rem 4rem 3.5rem var(--stage-pad);
 }
 
 .hero-eyebrow {
@@ -515,7 +538,7 @@ body {
 .scroll-hint {
   position: absolute;
   bottom: 2.5rem;
-  left: 0;
+  left: var(--stage-pad);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -527,6 +550,8 @@ body {
 }
 
 .scroll-hint svg {
+  width: 0.57rem;
+  height: 0.68rem;
   animation: scroll-bounce 2s ease-in-out infinite;
 }
 
@@ -546,16 +571,17 @@ body {
 @media (min-width: 768px) {
   .main-content:has(.hero) .page-section {
     min-height: 100vh;
-    padding: 3.5rem 4rem;
+    padding: 3.5rem 4rem 3.5rem var(--stage-pad);
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
 
-  /* Inside a snap panel the label sits with the centered block,
-     so drop the large standalone top margin. */
-  .main-content:has(.hero) .page-section .section-label {
-    margin-top: 0;
+  /* Grid sections skip the stage lean: leaned cards would crowd the
+     right edge of the screen. Overriding --stage-pad keeps the label
+     and scroll hint aligned with the grid for free. */
+  .main-content:has(.hero) .page-section:has(.projects-grid) {
+    --stage-pad: max(4rem, calc((100% - var(--stage-w)) / 2));
   }
 }
 
@@ -572,8 +598,8 @@ body {
 }
 
 .section-dot {
-  width: 5px;
-  height: 5px;
+  width: max(4px, 0.285rem);
+  height: max(4px, 0.285rem);
   border-radius: 50%;
   border: none;
   background-color: var(--text);
@@ -601,6 +627,7 @@ body {
 
 /* ---------- Page section ---------- */
 .page-section {
+  position: relative;
   padding: 4rem;
 }
 
@@ -610,15 +637,17 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   opacity: 0.4;
-  margin: 8rem 0 1.75rem;
+  margin: 0 0 1.75rem;
 }
 
 /* ---------- Project cards ---------- */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  /* 17rem min keeps the stage at 3 columns; wider cards wrap the long
+     descriptions into fewer lines so the cards stay shorter. */
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
   gap: 1rem;
-  max-width: 60rem;
+  max-width: var(--stage-w);
 }
 
 .project-card {
@@ -653,6 +682,8 @@ body {
 }
 
 .project-card-arrow {
+  width: 0.455rem;
+  height: 0.455rem;
   flex-shrink: 0;
   opacity: 0;
   fill: var(--text);
@@ -857,11 +888,17 @@ body {
   }
 }
 
-/* ---------- Small desktop / tablet ---------- */
-@media (min-width: 768px) and (max-width: 1200px) {
+/* ---------- Small desktop / tablet ----------
+   Compact sidebar for tablets and laptop-class widths; the full
+   33rem sidebar only earns its keep from ~1536px up. */
+@media (min-width: 768px) and (max-width: 1535px) {
+  :root {
+    --stage-pad: max(3rem, calc((100% - var(--stage-w)) / 2 + 10%));
+  }
+
   .site-header {
-    width: 17rem;
-    padding: 4rem 2rem 6rem;
+    width: calc(15rem + var(--sidebar-inset));
+    padding: 8rem 2rem 6rem var(--sidebar-inset);
     gap: 3rem;
   }
 
@@ -875,20 +912,29 @@ body {
 
   .hero,
   .main-content:has(.hero) .page-section {
-    padding: 3rem;
+    padding: 3rem 3rem 3rem var(--stage-pad);
+  }
+
+  .main-content:has(.hero) .page-section:has(.projects-grid) {
+    --stage-pad: max(3rem, calc((100% - var(--stage-w)) / 2));
   }
 }
 
 /* ---------- Short viewports ---------- */
 @media (min-width: 768px) and (max-height: 820px) {
   .site-header {
-    padding-block: 4rem 6rem;
+    padding-block: 8rem 6rem;
     gap: 3rem;
   }
 }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 767px) {
+  html {
+    /* Phone reference: ~16px at a 375px-wide viewport. */
+    font-size: clamp(15px, 4.27vw, 17.6px);
+  }
+
   body {
     flex-direction: column;
   }
@@ -958,6 +1004,10 @@ body {
     width: 100%;
   }
 
+  .page-section {
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
   .hero {
     height: calc(100vh - 4.5rem);
     height: calc(100svh - 4.5rem);
@@ -975,6 +1025,12 @@ body {
   .scroll-hint {
     left: 1.5rem;
   }
+
+  /* Sections aren't full-screen panels on mobile, so a mid-page
+     scroll indicator is just noise. */
+  .page-section .scroll-hint {
+    display: none;
+  }
 }
 
 /* ---------- Reduced motion ---------- */
@@ -988,4 +1044,170 @@ body {
   .main-content {
     transition: opacity 0.2s ease;
   }
+}
+
+/* ============================================================
+   Reader mode
+   ============================================================
+   A plain, single-column document view: fixed readable type, no
+   animations, no full-screen panels, normal scrolling. The grain
+   overlay stays. Kept at the end of the file so it wins specificity
+   ties against the layout rules and media queries above. */
+:root[data-reader] {
+  font-size: 17px;
+  /* Reading column: 46rem, centered. */
+  --reader-pad: max(1.5rem, calc(50% - 23rem));
+}
+
+/* No motion */
+:root[data-reader] *,
+:root[data-reader] *::before,
+:root[data-reader] *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+:root[data-reader] body {
+  display: block;
+}
+
+/* ---- Header becomes a simple document header ---- */
+:root[data-reader] .site-header {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  gap: 1.25rem;
+  padding: 2rem var(--reader-pad) 0;
+}
+
+:root[data-reader] .hamburger {
+  display: none;
+}
+
+:root[data-reader] .site-nav {
+  position: static;
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  padding: 0;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  text-align: left;
+}
+
+:root[data-reader] .site-nav ul {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+:root[data-reader] .nav-link {
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.25rem 0;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+:root[data-reader] .nav-link[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+
+:root[data-reader] .nav-dot {
+  display: none !important;
+}
+
+:root[data-reader] .external-arrow {
+  position: static;
+  transform: none;
+  width: 0.455rem;
+  height: 0.455rem;
+  margin-top: 0.125rem;
+  opacity: 1;
+}
+
+:root[data-reader] .reader-toggle {
+  color: var(--accent);
+  opacity: 1;
+}
+
+/* ---- Content flows as one readable column ---- */
+:root[data-reader] .main-content,
+:root[data-reader] .main-content:has(.hero) {
+  padding: 1.5rem var(--reader-pad) 4rem;
+  min-height: auto;
+  opacity: 1;
+  filter: none;
+}
+
+:root[data-reader] .hero {
+  display: block;
+  height: auto;
+  padding: 0;
+}
+
+:root[data-reader] .hero-eyebrow {
+  margin: 0 0 0.75rem;
+}
+
+:root[data-reader] .hero-title {
+  font-size: 2.25rem;
+  line-height: 1.15;
+}
+
+:root[data-reader] .hero-body {
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 65ch;
+  margin: 0.75rem 0 0;
+}
+
+:root[data-reader] .hero-below {
+  margin-top: 0.75rem;
+}
+
+:root[data-reader] .scroll-hint,
+:root[data-reader] .section-dots {
+  display: none !important;
+}
+
+:root[data-reader] .page-section,
+:root[data-reader] .main-content:has(.hero) .page-section {
+  min-height: 0;
+  display: block;
+  padding: 2.5rem 0 0;
+}
+
+:root[data-reader] .section-label {
+  margin: 0 0 1rem;
+}
+
+:root[data-reader] .projects-grid {
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  max-width: none;
+}
+
+:root[data-reader] .project-card-arrow {
+  opacity: 1;
+}
+
+:root[data-reader] .about-content,
+:root[data-reader] .contact-content {
+  max-width: 65ch;
+}
+
+:root[data-reader] .about-content p,
+:root[data-reader] .contact-intro {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+:root[data-reader] .copy-icon,
+:root[data-reader] .contact-link-value .external-arrow {
+  opacity: 1;
 }

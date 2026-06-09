@@ -48,6 +48,29 @@ if (themeToggle) {
   });
 }
 
+/* ---------- Reader mode ---------- */
+const readerToggle = document.querySelector('.reader-toggle');
+const readerOn = () => document.documentElement.hasAttribute('data-reader');
+
+if (readerToggle) {
+  const syncReaderPressed = () =>
+    readerToggle.setAttribute('aria-pressed', String(readerOn()));
+  syncReaderPressed();
+
+  readerToggle.addEventListener('click', () => {
+    const root = document.documentElement;
+    const on = !readerOn();
+    if (on) root.setAttribute('data-reader', '');
+    else root.removeAttribute('data-reader');
+    localStorage.setItem('reader', String(on));
+    syncReaderPressed();
+
+    // Re-run page setup so section snapping and dots match the mode.
+    disposePage();
+    disposePage = setupPage();
+  });
+}
+
 /* ---------- Active nav state ---------- */
 function syncActiveNav() {
   const here = location.pathname;
@@ -184,6 +207,7 @@ function setupPage() {
 
 // ---- Controlled section scrolling ----
 function initSectionScrolling(signal, cleanups) {
+  if (readerOn()) return;
   if (!window.matchMedia('(min-width: 768px)').matches) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -334,7 +358,9 @@ async function navigate(href, { push = true } = {}) {
   closeNav();
 
   main.classList.remove('is-visible');
-  await waitForBlurOut();
+  // Reader mode disables transitions, so transitionend never fires;
+  // skip the blur-out wait and swap content immediately.
+  if (!readerOn()) await waitForBlurOut();
 
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const incoming = doc.querySelector('.main-content');
