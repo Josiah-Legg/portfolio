@@ -1,21 +1,16 @@
 /* ============================================================
    Josiah Legg - Portfolio
-   The sidebar is set up once and persists for the life of the tab.
-   Page navigations swap only <main> in place (a small fetch-based
-   router) so the sidebar never reloads and the content blurs out/in.
    ============================================================ */
 
-// ---- Persistent sidebar elements (never replaced) ----
+// ---- Persistent sidebar elements ----
 const nav = document.querySelector('.site-nav');
 const navDot = document.querySelector('.nav-dot');
 const hamburger = document.querySelector('.hamburger');
 const themeToggle = document.querySelector('.theme-toggle');
 
-// Live reference to the current main; reassigned only if it's ever replaced.
 let main = document.querySelector('.main-content');
 
 /* ---------- Path helpers ---------- */
-// Normalise so "/projects/", "/projects", and "/projects/index.html" compare equal.
 function normalizePath(pathname) {
   let p = pathname.replace(/index\.html$/, '');
   if (!p.endsWith('/')) p += '/';
@@ -35,8 +30,7 @@ hamburger.addEventListener('click', () => {
   hamburger.setAttribute('aria-expanded', String(isOpen));
 });
 
-/* ---------- Theme toggle ----------
-   (Initial theme is set by the inline <head> script to avoid a flash.) */
+/* ---------- Theme toggle ---------- */
 if (themeToggle) {
   const syncPressed = () =>
     themeToggle.setAttribute(
@@ -54,9 +48,7 @@ if (themeToggle) {
   });
 }
 
-/* ---------- Active nav state ----------
-   Mark the nav link (and the logo, for the home page) matching the current
-   path. Skips external links so the YouTube/Resume link is never "current". */
+/* ---------- Active nav state ---------- */
 function syncActiveNav() {
   const here = location.pathname;
 
@@ -75,18 +67,15 @@ function syncActiveNav() {
   }
 }
 
-/* ---------- Nav dot ----------
-   Rests on the active item, and while the cursor is over the menu it follows
-   along — snapping to the nearest item and leaning toward the cursor with a
-   springy wiggle until the cursor crosses to the next item. */
+/* ---------- Nav dot ---------- */
 const navDotController = (function () {
   if (!navDot) return { refresh() {} };
 
   const links = () => [...nav.querySelectorAll('.nav-link')];
   const canHover = window.matchMedia('(hover: hover)');
 
-  let current = null;   // animated top (px), null until first placed
-  let target = 0;       // where the dot wants to be (px)
+  let current = null;
+  let target = 0;
   let velocity = 0;
   let hovering = false;
   let raf = null;
@@ -133,11 +122,10 @@ const navDotController = (function () {
     if (!canHover.matches) return;
     clearTimeout(leaveTimer);
     hovering = true;
-    nav.classList.add('has-active'); // show the dot even on pages with no active item
+    nav.classList.add('has-active');
 
     const cursorY = e.clientY - nav.getBoundingClientRect().top;
 
-    // Snap to the nearest item by center...
     let nearest = null;
     let best = Infinity;
     for (const link of links()) {
@@ -146,8 +134,6 @@ const navDotController = (function () {
     }
     if (!nearest) return;
 
-    // ...then lean a little toward the cursor — but only a damped fraction of
-    // the cursor's offset, so the dot subtly responds rather than tracking it.
     const center = centerOf(nearest);
     const lean = Math.max(-4, Math.min(4, (cursorY - center) * 0.16));
 
@@ -156,7 +142,6 @@ const navDotController = (function () {
     start();
   });
 
-  // Brief delay so darting across the small gaps between items doesn't snap back.
   nav.addEventListener('mouseleave', () => {
     clearTimeout(leaveTimer);
     leaveTimer = setTimeout(() => {
@@ -165,7 +150,6 @@ const navDotController = (function () {
     }, 60);
   });
 
-  // Re-rest on the active item (called on load and after each page swap).
   function refresh() {
     const rest = restCenter();
     if (rest == null) {
@@ -186,14 +170,11 @@ const navDotController = (function () {
 
 /* ============================================================
    Per-page setup / teardown
-   Everything tied to the current main's content lives here so it can be
-   cleanly torn down before the next page is swapped in.
    ============================================================ */
 function setupPage() {
   const ac = new AbortController();
   const cleanups = [() => ac.abort()];
 
-  // Reveal: blur/fade in on the next frame.
   requestAnimationFrame(() => main.classList.add('is-visible'));
 
   initSectionScrolling(ac.signal, cleanups);
@@ -201,11 +182,9 @@ function setupPage() {
   return () => cleanups.forEach(fn => fn());
 }
 
-// ---- Controlled section scrolling (one screen at a time on desktop) ----
+// ---- Controlled section scrolling ----
 function initSectionScrolling(signal, cleanups) {
   if (!window.matchMedia('(min-width: 768px)').matches) return;
-  // Don't hijack the wheel for users who prefer reduced motion — let them
-  // scroll the sections natively.
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const sections = [...main.querySelectorAll('.hero, .page-section')];
@@ -214,7 +193,6 @@ function initSectionScrolling(signal, cleanups) {
   let currentIndex = 0;
   let isAnimating = false;
 
-  // Build the dots indicator.
   const dotsNav = document.createElement('nav');
   dotsNav.className = 'section-dots';
   dotsNav.setAttribute('aria-label', 'Page sections');
@@ -262,8 +240,6 @@ function initSectionScrolling(signal, cleanups) {
     requestAnimationFrame(step);
   }
 
-  // When a section is taller than the viewport, scroll natively to its edge
-  // before snapping to the next section.
   function canScrollWithin(index, dir) {
     const vh = window.innerHeight;
     const rect = sections[index].getBoundingClientRect();
@@ -321,7 +297,7 @@ function initSectionScrolling(signal, cleanups) {
 }
 
 /* ============================================================
-   Router — swap <main> in place, keep the sidebar untouched.
+   Router
    ============================================================ */
 let disposePage = setupPage();
 
@@ -338,7 +314,7 @@ function waitForBlurOut() {
       if (e.target === main && e.propertyName === 'opacity') finish();
     };
     main.addEventListener('transitionend', onEnd);
-    setTimeout(finish, 500); // fallback if transitionend doesn't fire
+    setTimeout(finish, 500);
   });
 }
 
@@ -351,13 +327,12 @@ async function navigate(href, { push = true } = {}) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     html = await res.text();
   } catch {
-    window.location.href = url.href; // graceful fallback to a full navigation
+    window.location.href = url.href;
     return;
   }
 
   closeNav();
 
-  // Blur the current content out, then wait for it to finish.
   main.classList.remove('is-visible');
   await waitForBlurOut();
 
@@ -365,11 +340,9 @@ async function navigate(href, { push = true } = {}) {
   const incoming = doc.querySelector('.main-content');
   if (!incoming) { window.location.href = url.href; return; }
 
-  // Tear down the old page, swap content in place (same element → transitions
-  // keep working), and update everything that depends on the new page.
   disposePage();
   main.innerHTML = incoming.innerHTML;
-  main.className = incoming.className; // resets to "main-content" → starts blurred
+  main.className = incoming.className;
   document.title = doc.title || document.title;
 
   if (push) history.pushState({}, '', url.href);
@@ -378,14 +351,12 @@ async function navigate(href, { push = true } = {}) {
   syncActiveNav();
   navDotController.refresh();
 
-  // Move focus to the new content for keyboard / screen-reader users.
   main.setAttribute('tabindex', '-1');
   main.focus({ preventScroll: true });
 
   disposePage = setupPage();
 }
 
-// Intercept same-origin link clicks.
 document.addEventListener('click', e => {
   if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
@@ -396,20 +367,17 @@ document.addEventListener('click', e => {
   if (!href || link.target === '_blank' || link.hasAttribute('download')) return;
 
   const url = new URL(href, location.href);
-  if (url.origin !== location.origin) return;       // external
-  if (url.hash && samePath(url.pathname, location.pathname)) return; // in-page anchor
+  if (url.origin !== location.origin) return;
+  if (url.hash && samePath(url.pathname, location.pathname)) return;
 
   e.preventDefault();
-  if (samePath(url.pathname, location.pathname)) return; // already here
+  if (samePath(url.pathname, location.pathname)) return;
   navigate(url.href);
 });
 
 window.addEventListener('popstate', () => navigate(location.href, { push: false }));
 
-/* ---------- Copy to clipboard ----------
-   Elements with [data-copy] (e.g. the email on /contact/) copy their value
-   instead of navigating, and flash a "Copied" confirmation. The mailto href
-   stays as a no-JS fallback. Delegated so it survives page swaps. */
+/* ---------- Copy to clipboard ---------- */
 function fallbackCopy(text) {
   const ta = document.createElement('textarea');
   ta.value = text;
@@ -442,6 +410,25 @@ document.addEventListener('click', e => {
   }
 });
 
-// Keep the active state correct on first load.
+/* ---------- Clickable data-href elements ---------- */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-href]');
+  if (!el || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+  const href = el.getAttribute('data-href');
+  if (!href) return;
+
+  const url = new URL(href, location.href);
+  
+  // External links
+  if (url.origin !== location.origin) {
+    window.open(url.href, '_blank');
+    return;
+  }
+
+  e.preventDefault();
+  navigate(url.href);
+});
+
 syncActiveNav();
 navDotController.refresh();

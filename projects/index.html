@@ -4,9 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Selected work by Josiah Legg — a collection of things designed, built, or both.">
+  <meta name="description" content="Selected work by Josiah Legg - a collection of things designed, built, or both.">
 
-  <!-- Set theme before paint to avoid a flash of the wrong theme -->
   <script>
     (function () {
       var saved = localStorage.getItem('theme');
@@ -17,13 +16,10 @@
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
-  <!-- Open Graph / social preview. TODO: set og:image to a full URL of a 1200x630
-       image (e.g. https://yourdomain.com/og-image.png) and add that image file. -->
   <meta property="og:type" content="website">
-  <!-- TODO: replace josiahlegg.com with your production domain -->
   <meta property="og:url" content="https://josiahlegg.com/projects/">
   <meta property="og:title" content="Josiah Legg | Projects">
-  <meta property="og:description" content="Selected work — a collection of things designed, built, or both.">
+  <meta property="og:description" content="Selected work - a collection of things designed, built, or both.">
   <meta property="og:image" content="https://josiahlegg.com/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
 
@@ -42,16 +38,9 @@
   <header class="site-header">
     <div class="header-row">
       <a href="/" class="logo" aria-label="Josiah Legg | Portfolio">
-        <svg class="logo-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="14.31" y1="8" x2="20.05" y2="17.94" />
-            <line x1="9.69" y1="8" x2="21.17" y2="8" />
-            <line x1="7.38" y1="12" x2="13.12" y2="2.06" />
-            <line x1="9.69" y1="16" x2="3.95" y2="6.06" />
-            <line x1="14.31" y1="16" x2="2.83" y2="16" />
-            <line x1="16.62" y1="12" x2="10.88" y2="21.94" />
-          </g>
+        <svg class="logo-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect class="logo-icon-bg" width="64" height="64" rx="16" />
+          <text class="logo-icon-text" x="32" y="32" text-anchor="middle" dominant-baseline="central">JL</text>
         </svg>
         <span class="logo-text">Josiah Legg</span>
       </a>
@@ -111,10 +100,10 @@
     </section>
 
     <section class="page-section">
-      <p class="section-label">All projects</p>
+      <p class="section-label">Some of my recent projects</p>
       <div class="projects-grid">
 
-        <article class="project-card">
+        <article class="project-card" data-href="https://github.com/Josiah-Legg/portfolio">
           <div class="project-card-header">
             <h2 class="project-card-title">Portfolio</h2>
             <svg class="project-card-arrow" width="8" height="8" viewBox="0 0 8 8" aria-hidden="true">
@@ -130,48 +119,81 @@
           </div>
         </article>
 
-        <article class="project-card">
+        <article class="project-card" data-href="https://github.com/Josiah-Legg/spoticli">
           <div class="project-card-header">
-            <h2 class="project-card-title">Placeholder Project</h2>
+            <h2 class="project-card-title">SpotiCLI</h2>
             <svg class="project-card-arrow" width="8" height="8" viewBox="0 0 8 8" aria-hidden="true">
               <path d="M0.772727 8L0 7.22727L6.13636 1.09091H0.727273V0H8V7.27273H6.90909V1.86364L0.772727 8Z" />
             </svg>
           </div>
-          <p class="project-card-desc">Short description of the project, what it does and why it was interesting to
-            build.</p>
+          <p class="project-card-desc">Originally made as just a command-line tool for controlling Spotify, I also ended
+            up developing it into a full desktop app with a TUI (text-based user interface).
+          </p>
           <div class="project-card-tags">
-            <span class="tag">React</span>
-            <span class="tag">TypeScript</span>
-          </div>
-        </article>
-
-        <article class="project-card">
-          <div class="project-card-header">
-            <h2 class="project-card-title">Placeholder Project</h2>
-            <svg class="project-card-arrow" width="8" height="8" viewBox="0 0 8 8" aria-hidden="true">
-              <path d="M0.772727 8L0 7.22727L6.13636 1.09091H0.727273V0H8V7.27273H6.90909V1.86364L0.772727 8Z" />
-            </svg>
-          </div>
-          <p class="project-card-desc">Short description of the project, what it does and why it was interesting to
-            build.</p>
-          <div class="project-card-tags">
-            <span class="tag">Python</span>
+            <span class="tag">C</span>
+            <span class="tag">C++</span>
             <span class="tag">API</span>
           </div>
         </article>
 
-        <article class="project-card">
+        <article class="project-card" data-href="">
           <div class="project-card-header">
-            <h2 class="project-card-title">Placeholder Project</h2>
+            <h2 class="project-card-title">LoRA Fine-Tuning</h2>
             <svg class="project-card-arrow" width="8" height="8" viewBox="0 0 8 8" aria-hidden="true">
               <path d="M0.772727 8L0 7.22727L6.13636 1.09091H0.727273V0H8V7.27273H6.90909V1.86364L0.772727 8Z" />
             </svg>
           </div>
-          <p class="project-card-desc">Short description of the project, what it does and why it was interesting to
-            build.</p>
+          <p class="project-card-desc">The AI models named 'Avery' where the products of my first few attempts at LORA
+            fine-tuning. I created 4 models in this project, you can read the full details about each one on my blog when released.
+          </p>
           <div class="project-card-tags">
-            <span class="tag">Design</span>
-            <span class="tag">Figma</span>
+            <span class="tag">Python</span>
+            <span class="tag">Torch</span>
+            <span class="tag">AI</span>
+          </div>
+        </article>
+
+        <article class="project-card" data-href="https://github.com/Josiah-Legg/vault">
+          <div class="project-card-header">
+            <h2 class="project-card-title">Vault Editor</h2>
+            <svg class="project-card-arrow" width="8" height="8" viewBox="0 0 8 8" aria-hidden="true">
+              <path d="M0.772727 8L0 7.22727L6.13636 1.09091H0.727273V0H8V7.27273H6.90909V1.86364L0.772727 8Z" />
+            </svg>
+          </div>
+          <p class="project-card-desc">A standalone, local-first markdown note-taking app. I created it as an
+            open-source alternative to Obsidian. Still a work in progress.</p>
+          <div class="project-card-tags">
+            <span class="tag">Typescript</span>
+            <span class="tag">Rust</span>
+          </div>
+        </article>
+
+        <article class="project-card" data-href="https://github.com/Josiah-Legg/img2ascii">
+          <div class="project-card-header">
+            <h2 class="project-card-title">img2ascii</h2>
+            <svg class="project-card-arrow" width="8" height="8" viewBox="0 0 8 8" aria-hidden="true">
+              <path d="M0.772727 8L0 7.22727L6.13636 1.09091H0.727273V0H8V7.27273H6.90909V1.86364L0.772727 8Z" />
+            </svg>
+          </div>
+          <p class="project-card-desc">While I did not create the backend functionality, I took on this project to
+            improve the preexisting img2ascii by JosefVesely which had some issues and was fully command-line based. I
+            added an interactive terminal UI and other features.</p>
+          <div class="project-card-tags">
+            <span class="tag">Typescript</span>
+            <span class="tag">Rust</span>
+          </div>
+        </article>
+
+        <article class="project-card" data-href="https://github.com/Josiah-Legg/pin">
+          <div class="project-card-header">
+            <h2 class="project-card-title">Pin</h2>
+            <svg class="project-card-arrow" width="8" height="8" viewBox="0 0 8 8" aria-hidden="true">
+              <path d="M0.772727 8L0 7.22727L6.13636 1.09091H0.727273V0H8V7.27273H6.90909V1.86364L0.772727 8Z" />
+            </svg>
+          </div>
+          <p class="project-card-desc">A simple git alternative; a personal version-control and backup system. One binary, self-hosted.</p>
+          <div class="project-card-tags">
+            <span class="tag">Go</span>
           </div>
         </article>
 

@@ -2,7 +2,7 @@
    Josiah Legg - Portfolio
    ============================================================ */
 
-/* ---------- Color themes - the only 5 colors used on this site ---------- */
+/* ---------- Color themes ---------- */
 :root[data-theme="light"] {
   --text: #0f0d08;
   --background: #fefae7;
@@ -35,27 +35,45 @@
 
   /* Theme transition */
   --theme-transition-duration: 0.4s;
-
-  /* Sidebar */
-  /* The left rail: at least the sidebar width, but never narrower than 1/6 of
-     the viewport, so main content is always anchored to (or right of) the 1/6
-     line and never drifts on wide screens. */
 }
 
 /* ---------- Reset ---------- */
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-html, body { margin: 0; padding: 0; }
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
 
-html { overflow-x: hidden; }
+html {
+  overflow-x: hidden;
+}
 
-ul { list-style: none; padding: 0; margin: 0; }
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-a { color: inherit; text-decoration: none; }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-button { font: inherit; }
+button {
+  font: inherit;
+}
 
-img { display: block; max-width: 100%; height: auto; }
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
 
 /* ---------- Base ---------- */
 html {
@@ -70,21 +88,23 @@ html {
 }
 
 /* WebKit custom scrollbar */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 ::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--primary), transparent 35%);
   border-radius: 99px;
 }
-::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-/* Two grain layers so the texture shows on every value range:
-   - multiply darkens, so it grains the light areas (background) but is
-     invisible on near-black text.
-   - screen lightens, so it grains the dark areas (text) but is invisible
-     on the light background.
-   Together they texture everything, and it works in both themes since the
-   light/dark regions simply swap which layer does the work. */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
 html::before,
 html::after {
   content: '';
@@ -118,9 +138,7 @@ body {
   width: 100%;
 }
 
-/* ---------- Skip to content ----------
-   First focusable element on the page; invisible until a keyboard user tabs to
-   it, then it lets them jump past the sidebar straight to the main content. */
+/* ---------- Skip to content ---------- */
 .skip-link {
   position: fixed;
   top: 0.75rem;
@@ -182,10 +200,23 @@ body {
 }
 
 .logo-icon {
-  height: 1.6em;
-  width: auto;
+  height: 1.7em;
+  width: 1.7em;
   flex-shrink: 0;
-  stroke-width: 2;
+}
+
+.logo-icon-bg {
+  fill: var(--background);
+  transition: fill var(--theme-transition-duration) var(--ease-in-out-sine);
+}
+
+.logo-icon-text {
+  font-family: var(--font-logo);
+  font-weight: 600;
+  font-size: 48px;
+  letter-spacing: -0.01em;
+  fill: var(--text);
+  transition: fill var(--theme-transition-duration) var(--ease-in-out-sine);
 }
 
 .logo-text {
@@ -250,7 +281,9 @@ body {
   transition: color var(--theme-transition-duration) var(--ease-in-out-sine), opacity 0.2s ease;
 }
 
-.theme-toggle:hover { opacity: 0.65; }
+.theme-toggle:hover {
+  opacity: 0.65;
+}
 
 .theme-toggle svg {
   width: 16px;
@@ -259,12 +292,21 @@ body {
   fill: none;
 }
 
-/* Show the icon for the theme you'll switch to */
-.theme-toggle .icon-sun { display: none; }
-.theme-toggle .icon-moon { display: inline-flex; }
+.theme-toggle .icon-sun {
+  display: none;
+}
 
-:root[data-theme="dark"] .theme-toggle .icon-sun { display: inline-flex; }
-:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+.theme-toggle .icon-moon {
+  display: inline-flex;
+}
+
+:root[data-theme="dark"] .theme-toggle .icon-sun {
+  display: inline-flex;
+}
+
+:root[data-theme="dark"] .theme-toggle .icon-moon {
+  display: none;
+}
 
 /* ---- Nav ---- */
 .site-nav {
@@ -299,8 +341,6 @@ body {
     color var(--theme-transition-duration) var(--ease-in-out-sine);
 }
 
-/* Bridge half the 0.5rem list gap above and below each link
-   so the pointer always remains over a nav item while moving. */
 .nav-link::before {
   content: "";
   position: absolute;
@@ -386,8 +426,6 @@ body {
   filter: blur(0);
 }
 
-/* Router moves focus here after a page swap (for keyboard / screen readers);
-   it isn't an interactive control, so no focus ring. */
 .main-content:focus {
   outline: none;
 }
@@ -437,8 +475,6 @@ body {
   margin: 1.25rem 0 0;
 }
 
-/* Wrapper for below-title content when there's more than one element (e.g. the
-   404 page's body + link), so they share the bottom spacer row. */
 .hero-below {
   grid-row: 3;
   align-self: start;
@@ -495,15 +531,31 @@ body {
 }
 
 @keyframes scroll-bounce {
-  0%, 100% { transform: translateY(0); }
-  55% { transform: translateY(5px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  55% {
+    transform: translateY(5px);
+  }
 }
 
 /* ---------- Multi-section layout ---------- */
 @media (min-width: 768px) {
   .main-content:has(.hero) .page-section {
     min-height: 100vh;
-    padding: 4rem;
+    padding: 3.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Inside a snap panel the label sits with the centered block,
+     so drop the large standalone top margin. */
+  .main-content:has(.hero) .page-section .section-label {
+    margin-top: 0;
   }
 }
 
@@ -558,26 +610,24 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   opacity: 0.4;
-  margin: 8rem 0 2.5rem;
+  margin: 8rem 0 1.75rem;
 }
 
 /* ---------- Project cards ---------- */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.25rem;
-  /* Cap the measure so cards don't sprawl across very wide viewports now that
-     the layout is full-bleed (no centered body). Tops out around 3 columns. */
+  gap: 1rem;
   max-width: 60rem;
 }
 
 .project-card {
   border: 1px solid color-mix(in srgb, var(--primary), transparent 55%);
   border-radius: 0.5rem;
-  padding: 1.5rem;
+  padding: 1.35rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.6rem;
   transition: border-color 0.2s ease, background-color 0.2s ease;
   cursor: pointer;
 }
@@ -743,8 +793,6 @@ body {
   gap: 0.4rem;
 }
 
-/* The copy icon hints that the email is clickable-to-copy, revealed exactly
-   like the external-arrow that marks the new-tab links. */
 .copy-icon {
   width: 0.5em;
   height: 0.5em;
@@ -797,6 +845,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .copy-default,
   .copy-feedback {
     transition: opacity 0.2s ease;
@@ -805,6 +854,36 @@ body {
   .copy-feedback,
   .contact-copy.copied .copy-default {
     transform: none;
+  }
+}
+
+/* ---------- Small desktop / tablet ---------- */
+@media (min-width: 768px) and (max-width: 1200px) {
+  .site-header {
+    width: 17rem;
+    padding: 4rem 2rem 6rem;
+    gap: 3rem;
+  }
+
+  .logo {
+    padding-right: 1rem;
+  }
+
+  .main-content {
+    padding: 3rem;
+  }
+
+  .hero,
+  .main-content:has(.hero) .page-section {
+    padding: 3rem;
+  }
+}
+
+/* ---------- Short viewports ---------- */
+@media (min-width: 768px) and (max-height: 820px) {
+  .site-header {
+    padding-block: 4rem 6rem;
+    gap: 3rem;
   }
 }
 
@@ -858,14 +937,10 @@ body {
     letter-spacing: 0;
   }
 
-  /* The cursor-following dot is a desktop-rail affordance; the mobile overlay
-     is a centered full-screen menu, so it has no place here. */
   .nav-dot {
     display: none !important;
   }
 
-  /* Arrow sits outside the link box so the text stays optically centered,
-     and scales with the larger mobile type instead of staying 8px. */
   .external-arrow {
     position: absolute;
     left: calc(100% + 0.5em);
@@ -880,19 +955,31 @@ body {
   .main-content {
     padding: 2rem 1.5rem;
     min-height: auto;
+    width: 100%;
   }
 
   .hero {
-    /* subtract sticky header height so hero fills exactly the remaining viewport */
     height: calc(100vh - 4.5rem);
     height: calc(100svh - 4.5rem);
     padding: 2rem 1.5rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-eyebrow,
+  .hero-title,
+  .hero-body,
+  .hero-below {
+    max-width: 100%;
+  }
+
+  .scroll-hint {
+    left: 1.5rem;
   }
 }
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-  /* Keep the page-transition reveal, but as a plain fade with no blur. */
+
   .main-content,
   .main-content.is-visible {
     filter: none;
